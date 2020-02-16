@@ -1,6 +1,8 @@
 //!DATA
+let moviesData = [];
 const favoriteData = JSON.parse(localStorage.getItem('favoriteData')) || [];
 const moviesList = document.querySelector('.movies-list');
+const moviesListLoader = document.querySelector('.movies-list__loader');
 const favoriteList = document.querySelector('.favorite-list__content');
 
 
@@ -45,7 +47,7 @@ const toggleFavorite = (mark) =>{
 		//add to favorite list
 		const favoriteListItem = document.createElement('li');
 		favoriteListItem.id = mark.dataset.id;
-		favoriteListItem.innerHTML = `${mark.dataset.name}<span class="mark__delete">X</span>`;
+		favoriteListItem.innerHTML = `${mark.dataset.name}<button class="mark__delete btn--close"></button>`;
 		favoriteList.append(favoriteListItem);
 		console.log('item has been added');
 	} else {
@@ -122,7 +124,7 @@ const fillPopup = (movie) =>{
 		</div>
 		<div class="content__part content__part--right">
 			<div class="movie__name">${movie.name}</div>
-			<div class="movie__desc movie__description">${movie.description}</div>
+			<div class="movie__description">${movie.description}</div>
 			<div class="movie__director"><b>Director:</b> ${movie.director}</div>
 			<div class="movie__stars"><b>Starring:</b> ${movie.starring.join(', ')}</div>
 		</div>`;
@@ -136,8 +138,8 @@ const createMovies = () => {
 		if(e.target.classList.contains('movie__mark')){
 			toggleFavorite(e.target);
 		}else{
-			if(e.target.parentNode.id){
-				const movieId = e.target.parentNode.id;
+			if(e.target.parentNode.id || e.target.parentNode.parentNode.id){
+				let movieId = e.target.parentNode.id || e.target.parentNode.parentNode.id;
 				popupContent.innerHTML = '';
 				//show popup
 				popupLoader.classList.remove('hidden');
@@ -161,10 +163,11 @@ const createMovies = () => {
 	getMovies()
 		.then(data => {
 			if(data && data.length > 0){
+				moviesData = [...data];
 				const moviesBox = document.createDocumentFragment();
 				const favoritesBox = document.createDocumentFragment();
 
-				data.forEach(movie => {
+				moviesData.forEach(movie => {
 					//fill movies list
 					const favorite = favoriteData.indexOf(`${movie.id}`) === -1?
 														false :
@@ -174,8 +177,12 @@ const createMovies = () => {
 					movieItem.classList.add('movies-list__movie', 'movie');
 					movieItem.id = movie.id;
 					movieItem.innerHTML = `<img class="movie__img" src="${movie.img}" alt="${movie.name}">
-																<h2 class="movie__name text--center">${movie.name}</h2>
-																<div class="movie__year text--grey text--center">${movie.year}</div>
+																<div class="movie__info">
+																	<h2 class="movie__name text--center">${movie.name}</h2>
+																	<div class="movie__year text--grey text--center">${movie.year}</div>
+																	<div class="movie__description">${movie.description}</div>
+																	<div class="movie__genres"><b>Genges:</b> ${movie.genres.join(', ')}</div>
+																</div>
 																<div class="movie__mark" data-favorite="${favorite}" data-id="${movie.id}" data-name="${movie.name}"></div>`;
 					moviesBox.appendChild(movieItem);
 
@@ -183,11 +190,13 @@ const createMovies = () => {
 					if(favoriteData.indexOf(`${movie.id}`) !== -1){
 						const favoriteListItem = document.createElement('li');
 						favoriteListItem.id = movie.id;
-						favoriteListItem.innerHTML = `${movie.name}<span class="mark__delete">X</span>`;
+						favoriteListItem.innerHTML = `${movie.name}<button class="mark__delete btn--close"></bu>`;
 						favoritesBox.append(favoriteListItem);
 					}
 				});
-	
+
+				moviesListLoader.classList.add('hidden');
+
 				moviesList.append(moviesBox);
 				favoriteList.append(favoritesBox);
 			}
@@ -197,21 +206,26 @@ const createMovies = () => {
 createMovies();
 
 
-// const apgeConteiner = document.querySelector('.page__container');
-// // Callback function to execute when mutations are observed
-// const detectChanges = (mutationsList, observer) => {
-// 	for(let mutation of mutationsList) {
-// 			if (mutation.type === 'childList') {
-// 				const imagesLoaded = document.querySelectorAll('.img--loaded');
-// 				if(imagesLoaded.length > 0){
-// 					imagesLoaded.forEach(element => {
-// 						handleImage(element);
-// 					});
-// 				}
-// 			}
-// 	}
-// };
-// // Create an observer instance linked to the callback function
-// const mutationObserver = new MutationObserver(detectChanges);
-// // Start observing the target node for configured mutations
-// mutationObserver.observe(moreArticles, {childList: true});
+//!NAVIGATION
+const menu = document.querySelector('.header_menu');
+const favoriteListWrapper = document.querySelector('.favorite-list');
+
+menu.addEventListener('click', (e)=>{
+	if(e.target.classList.contains('menu__item--favorite')){
+		e.target.dataset.show === 'true' ?
+			favoriteListWrapper.dataset.show = 'false' :
+			favoriteListWrapper.dataset.show = 'true';
+	}else if(e.target.classList.contains('view__item--cards')){
+		moviesList.dataset.style = 'cards';
+	}else if(e.target.classList.contains('view__item--list')){
+		moviesList.dataset.style = 'list';
+	}
+	
+})
+
+const favoriteListWrapperClose = document.querySelector('.favorite-list__close');
+favoriteListWrapperClose.addEventListener('click', ()=>{
+	favoriteListWrapperClose.parentNode.dataset.show = 'false';
+})
+
+
