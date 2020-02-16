@@ -8,7 +8,7 @@ const favoriteList = document.querySelector('.favorite-list__content');
 
 //!GET MOVIES
 const getMovies = (movieId = false) => {
-	const url = `http://my-json-server.typicode.com/moviedb-tech/movies/list/${movieId ? movieId : ''}`
+	const url = `https://my-json-server.typicode.com/moviedb-tech/movies/list/${movieId ? movieId : ''}`
 	return fetch(url)
 		.then(response => {
 			if(response.ok){
