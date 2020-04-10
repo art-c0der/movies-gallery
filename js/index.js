@@ -1,25 +1,11 @@
+import getMovies from './getMovies.js';
+
 //!DATA
 let moviesData = [];
 const favoriteData = JSON.parse(localStorage.getItem('favoriteData')) || [];
 const moviesList = document.querySelector('.movies-list');
 const moviesListLoader = document.querySelector('.movies-list__loader');
 const favoriteList = document.querySelector('.favorite-list__content');
-
-
-//!GET MOVIES
-const getMovies = (movieId = false) => {
-	const url = `https://my-json-server.typicode.com/moviedb-tech/movies/list/${movieId ? movieId : ''}`
-	return fetch(url)
-		.then(response => {
-			if (response.ok) {
-				return response.json();
-			} else {
-				throw new Error(response.status);
-			}
-		})
-		.then(data => data)
-		.catch(error => alert(`Error ${error}: please try later...`))
-}
 
 
 //!REFRESH MARKS

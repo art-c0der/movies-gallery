@@ -353,7 +353,7 @@ ol li:before {
 	cursor: pointer;
 	background: #ffffff;
 	border: 1px solid var(--light-grey);
-	border-radius: 2px;
+	border-radius: 10px;
 	height: 400px;
 	width: 20%;
 	min-width: 200px;
@@ -447,7 +447,7 @@ ol li:before {
 	align-items: center;
 	border: 1px solid var(--grey);
 	background: #f0f2f3;
-	border-radius: 2px;
+	border-radius: 10px;
 	width: 100%;
 	max-width: 400px;
 	margin-top: 20px;
@@ -510,7 +510,7 @@ ol li:before {
 	position: relative;
 	background: #FFFFFF;
 	border: 1px solid var(--blue);
-	border-radius: 2px;
+	border-radius: 10px;
 	width: 100%;
 	max-width: 800px;
 	padding: 30px 10px;
